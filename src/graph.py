@@ -10,11 +10,12 @@ import chromadb
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import os
+# from src.graph import graph
 
 load_dotenv()
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-3.6-flash",
+    model="gemini-3.5-flash-lite",
     temperature=0,
 )
 
@@ -92,20 +93,41 @@ def retrieve_arxiv(state: AgentState) -> AgentState:
 
 
 def select_paper(state: AgentState) -> AgentState:
-    """Select the most relevant paper from the candidates."""
-
     candidate_papers = state.get("candidate_papers", [])
+    query = state.get("query", "").lower().strip()
 
     if not candidate_papers:
         return {
             "selected_paper": {},
-            "error": "No papers were found on arXiv for the given query.",
+            "error": "No papers were found on arXiv for the given query."
         }
 
-    selected_paper = candidate_papers[0]
+    query_terms = set(query.split())
+
+    scored_papers = []
+
+    for paper in candidate_papers:
+        title = paper.get("title", "").lower()
+        summary = paper.get("summary", "").lower()
+
+        title_terms = set(title.split())
+        summary_terms = set(summary.split())
+
+        title_score = len(query_terms & title_terms) * 3
+        summary_score = len(query_terms & summary_terms)
+
+        score = title_score + summary_score
+
+        paper["relevance_score"] = score
+        scored_papers.append((score, paper))
+
+    scored_papers.sort(key=lambda item: item[0], reverse=True)
+
+    selected_paper = scored_papers[0][1]
 
     return {
         "selected_paper": selected_paper,
+        "error": ""
     }
 
 
@@ -273,8 +295,111 @@ def retrieve_chunks(
 def summarize(state: AgentState) -> AgentState:
     """Generate an executive briefing for the selected paper."""
 
+    selected_paper = state.get("selected_paper", {})
+    paper_text = state.get("paper_text", "")
+
+    if not selected_paper:
+        return {
+            "briefing": "",
+            "error": "No paper was selected for summarization.",
+        }
+
+    if not paper_text:
+        return {
+            "briefing": "",
+            "error": "No paper text is available for summarization.",
+        }
+
+    title = selected_paper.get("title", "Unknown")
+    authors = ", ".join(selected_paper.get("authors", []))
+    arxiv_id = selected_paper.get("arxiv_id", "Unknown")
+    published = selected_paper.get("published", "Unknown")
+    pdf_url = selected_paper.get("pdf_url", "")
+
+    # Use the beginning of the paper because it contains
+    # the abstract and introduction.
+    total_length = len(paper_text)
+
+    total_length = len(paper_text)
+
+    beginning = paper_text[:8000]
+    
+    middle_start = max(0, total_length // 2 - 4000)
+    middle_end = min(total_length, total_length // 2 + 4000)
+    middle = paper_text[middle_start:middle_end]
+    
+    ending = paper_text[-10000:]
+    
+    paper_context = f"""
+    === BEGINNING OF PAPER ===
+    {beginning}
+    
+    === MIDDLE OF PAPER ===
+    {middle}
+    
+    === END OF PAPER ===
+    {ending}
+    """
+
+    prompt = f"""
+You are generating an executive briefing for an academic paper.
+
+Use ONLY the paper content provided below.
+Do not use outside knowledge.
+Do not invent results, limitations, or claims.
+
+Create a concise but informative briefing with exactly these sections:
+
+1. Title
+2. Authors
+3. arXiv ID
+4. Date
+5. Link
+6. Plain-English Summary
+7. Problem
+8. Approach
+9. Key Results
+10. Limitations
+11. Follow-up Questions
+
+For Limitations:
+- Report limitations of the proposed method (AR-RAG), not limitations of previous/existing methods.
+- Only include limitations explicitly stated by the authors.
+- You may use the Conclusion or other sections if the authors explicitly discuss limitations there.
+- Do not treat problems with prior methods as limitations of AR-RAG.
+- If the paper does not explicitly state limitations of AR-RAG, write:
+"Not clearly stated in the provided paper content."
+
+For sections 6-11, use information from the paper content.
+If a requested detail cannot be determined from the provided paper content,
+write:
+"Not clearly stated in the provided paper content."
+
+Paper metadata:
+Title: {title}
+Authors: {authors}
+arXiv ID: {arxiv_id}
+Date: {published}
+Link: {pdf_url}
+
+Paper content:
+{paper_context}
+"""
+
+    response = llm.invoke(prompt)
+
+    briefing = response.content
+
+    if isinstance(briefing, list):
+        briefing = "".join(
+            item.get("text", "")
+            for item in briefing
+            if isinstance(item, dict)
+        )
+
     return {
-        "briefing": ""
+        "briefing": briefing,
+        "error": "",
     }
 
 
@@ -355,6 +480,42 @@ Question:
         "error": "",
     }
 
+def route_after_selection(state: AgentState) -> str:
+    """Route to PDF processing only if paper selection succeeded."""
+
+    if state.get("error"):
+        return "end"
+
+    return "fetch_parse"
+
+def route_after_fetch(state: AgentState) -> str:
+    """Route to chunking only if PDF fetching and parsing succeeded."""
+
+    if state.get("error"):
+        return "end"
+
+    return "chunk_embed"
+
+def route_after_chunking(state: AgentState) -> str:
+    """Route to summarization only if chunking and embedding succeeded."""
+
+    if state.get("error"):
+        return "end"
+
+    return "summarize"
+
+def route_after_summary(state: AgentState) -> str:
+    """Route to QA only if summarization succeeded."""
+
+    if state.get("error"):
+        return "end"
+
+    return "qa"
+
+def route_after_qa(state: AgentState) -> str:
+    """End the current graph run after answering a question."""
+
+    return "end"
 
 # Build the state graph
 builder = StateGraph(AgentState)
@@ -371,10 +532,45 @@ builder.add_node("qa", qa)
 builder.add_edge(START, "understand_query")
 builder.add_edge("understand_query", "retrieve_arxiv")
 builder.add_edge("retrieve_arxiv", "select_paper")
-builder.add_edge("select_paper", "fetch_parse")
-builder.add_edge("fetch_parse", "chunk_embed")
-builder.add_edge("chunk_embed", "summarize")
-builder.add_edge("summarize", "qa")
+# builder.add_edge("select_paper", "fetch_parse")
+builder.add_conditional_edges(
+    "select_paper",
+    route_after_selection,
+    {
+        "fetch_parse": "fetch_parse",
+        "end": END,
+    },
+)
+
+# builder.add_edge("fetch_parse", "chunk_embed")
+builder.add_conditional_edges(
+    "fetch_parse",
+    route_after_fetch,
+    {
+        "chunk_embed": "chunk_embed",
+        "end": END,
+    },
+)
+# builder.add_edge("chunk_embed", "summarize")
+builder.add_conditional_edges(
+    "chunk_embed",
+    route_after_chunking,
+    {
+        "summarize": "summarize",
+        "end": END,
+    },
+)
+# builder.add_edge("summarize", "qa")
+# builder.add_conditional_edges(
+#     "summarize",
+#     route_after_summary,
+#     {
+#         "qa": "qa",
+#         "end": END,
+#     },
+# )
+
+builder.add_edge("summarize", END)
 builder.add_edge("qa", END)
 
 # Compile the graph

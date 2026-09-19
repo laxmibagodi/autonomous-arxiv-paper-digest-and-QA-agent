@@ -1,6 +1,10 @@
 from langgraph.graph import StateGraph, START, END
 
 from src.state import AgentState
+import arxiv
+import pymupdf
+from urllib.request import urlopen
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 def understand_query(state: AgentState) -> AgentState:
@@ -29,32 +33,144 @@ def understand_query(state: AgentState) -> AgentState:
 def retrieve_arxiv(state: AgentState) -> AgentState:
     """Retrieve candidate papers from arXiv."""
 
+    input_type = state["input_type"]
+    query = state["query"]
+
+    client = arxiv.Client(
+        page_size=5,
+        delay_seconds=3.0,
+        num_retries=2,
+    )
+
+    if input_type == "paper_id":
+        search = arxiv.Search(
+            id_list=[query]
+        )
+
+    elif input_type == "paper_url":
+        arxiv_id = query.rstrip("/").split("/")[-1]
+
+        search = arxiv.Search(
+            id_list=[arxiv_id]
+        )
+
+    else:
+        search = arxiv.Search(
+            query=query,
+            max_results=5,
+            sort_by=arxiv.SortCriterion.Relevance,
+        )
+
+    candidate_papers = []
+
+    for result in client.results(search):
+        candidate_papers.append(
+            {
+                "title": result.title,
+                "authors": [author.name for author in result.authors],
+                "arxiv_id": result.entry_id.split("/")[-1],
+                "published": result.published.isoformat(),
+                "summary": result.summary,
+                "pdf_url": result.pdf_url,
+            }
+        )
+
     return {
-        "candidate_papers": []
+        "candidate_papers": candidate_papers
     }
 
 
 def select_paper(state: AgentState) -> AgentState:
     """Select the most relevant paper from the candidates."""
 
+    candidate_papers = state.get("candidate_papers", [])
+
+    if not candidate_papers:
+        return {
+            "selected_paper": {},
+            "error": "No papers were found on arXiv for the given query.",
+        }
+
+    selected_paper = candidate_papers[0]
+
     return {
-        "selected_paper": {}
+        "selected_paper": selected_paper,
     }
 
 
 def fetch_parse(state: AgentState) -> AgentState:
-    """Fetch and parse the selected paper."""
+    """Download the selected paper PDF and extract its text."""
 
-    return {
-        "paper_text": ""
-    }
+    selected_paper = state.get("selected_paper", {})
+
+    if not selected_paper:
+        return {
+            "paper_text": "",
+            "error": "No paper was selected for PDF processing.",
+        }
+
+    pdf_url = selected_paper.get("pdf_url")
+
+    if not pdf_url:
+        return {
+            "paper_text": "",
+            "error": "The selected paper does not have a PDF URL.",
+        }
+
+    try:
+        pdf_data = urlopen(pdf_url).read()
+
+        document = pymupdf.open(stream=pdf_data, filetype="pdf")
+
+        pages = []
+
+        for page in document:
+            pages.append(page.get_text())
+
+        document.close()
+
+        paper_text = "\n".join(pages).strip()
+
+        if not paper_text:
+            return {
+                "paper_text": "",
+                "error": "The PDF was downloaded, but no text could be extracted.",
+            }
+
+        return {
+            "paper_text": paper_text,
+            "error": "",
+        }
+
+    except Exception as exc:
+        return {
+            "paper_text": "",
+            "error": f"Failed to fetch or parse the PDF: {exc}",
+        }
 
 
 def chunk_embed(state: AgentState) -> AgentState:
-    """Split paper text into chunks and prepare them for retrieval."""
+    """Split paper text into overlapping chunks for retrieval."""
+
+    paper_text = state.get("paper_text", "")
+
+    if not paper_text:
+        return {
+            "chunks": [],
+            "error": "No paper text is available for chunking.",
+        }
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1200,
+        chunk_overlap=200,
+        separators=["\n\n", "\n", ". ", " ", ""],
+    )
+
+    chunks = splitter.split_text(paper_text)
 
     return {
-        "chunks": []
+        "chunks": chunks,
+        "error": "",
     }
 
 

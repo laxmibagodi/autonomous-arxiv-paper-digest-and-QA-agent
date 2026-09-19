@@ -7,10 +7,9 @@ from urllib.request import urlopen
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 import chromadb
+chroma_client = chromadb.Client()
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-import os
-# from src.graph import graph
 
 load_dotenv()
 
@@ -18,6 +17,8 @@ llm = ChatGoogleGenerativeAI(
     model="gemini-3.5-flash-lite",
     temperature=0,
 )
+
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def understand_query(state: AgentState) -> AgentState:
     """Determine whether the user provided a topic, arXiv ID, or arXiv URL."""
@@ -48,51 +49,65 @@ def retrieve_arxiv(state: AgentState) -> AgentState:
     input_type = state["input_type"]
     query = state["query"]
 
-    client = arxiv.Client(
-        page_size=5,
-        delay_seconds=3.0,
-        num_retries=2,
-    )
-
-    if input_type == "paper_id":
-        search = arxiv.Search(
-            id_list=[query]
+    try:
+        client = arxiv.Client(
+            page_size=5,
+            delay_seconds=3.0,
+            num_retries=2,
         )
 
-    elif input_type == "paper_url":
-        arxiv_id = query.rstrip("/").split("/")[-1]
+        if input_type == "paper_id":
+            search = arxiv.Search(
+                id_list=[query]
+            )
 
-        search = arxiv.Search(
-            id_list=[arxiv_id]
-        )
+        elif input_type == "paper_url":
+            arxiv_id = query.rstrip("/").split("/")[-1]
 
-    else:
-        search = arxiv.Search(
-            query=query,
-            max_results=5,
-            sort_by=arxiv.SortCriterion.Relevance,
-        )
+            search = arxiv.Search(
+                id_list=[arxiv_id]
+            )
 
-    candidate_papers = []
+        else:
+            search = arxiv.Search(
+                query=query,
+                max_results=5,
+                sort_by=arxiv.SortCriterion.Relevance,
+            )
 
-    for result in client.results(search):
-        candidate_papers.append(
-            {
-                "title": result.title,
-                "authors": [author.name for author in result.authors],
-                "arxiv_id": result.entry_id.split("/")[-1],
-                "published": result.published.isoformat(),
-                "summary": result.summary,
-                "pdf_url": result.pdf_url,
-            }
-        )
+        candidate_papers = []
 
-    return {
-        "candidate_papers": candidate_papers
-    }
+        for result in client.results(search):
+            candidate_papers.append(
+                {
+                    "title": result.title,
+                    "authors": [author.name for author in result.authors],
+                    "arxiv_id": result.entry_id.split("/")[-1],
+                    "published": result.published.isoformat(),
+                    "summary": result.summary,
+                    "pdf_url": result.pdf_url,
+                }
+            )
 
+        return {
+            "candidate_papers": candidate_papers,
+            "error": "",
+        }
+
+    except Exception as exc:
+        return {
+            "candidate_papers": [],
+            "error": f"Failed to retrieve papers from arXiv: {exc}",
+        }
 
 def select_paper(state: AgentState) -> AgentState:
+    existing_error = state.get("error", "")
+
+    if existing_error:
+        return {
+            "selected_paper": {},
+            "error": existing_error,
+        }
     candidate_papers = state.get("candidate_papers", [])
     query = state.get("query", "").lower().strip()
 
@@ -163,6 +178,11 @@ def fetch_parse(state: AgentState) -> AgentState:
         document.close()
 
         paper_text = "\n".join(pages).strip()
+        if len(paper_text) < 200:
+            return {
+                "paper_text": "",
+                "error": "The PDF was downloaded, but insufficient text could be extracted.",
+            }
         reference_markers = [
         "\nReferences\n",
         "\nREFERENCES\n",
@@ -218,17 +238,19 @@ def chunk_embed(state: AgentState) -> AgentState:
             "error": "No chunks were created from the paper text.",
         }
 
-    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    # embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
     embeddings = embedding_model.encode(
         chunks,
         show_progress_bar=False,
     )
 
-    client = chromadb.Client()
+    # client = chromadb.Client()
 
-    collection = client.create_collection(
-        name="paper_chunks"
+    paper_id = state["selected_paper"]["arxiv_id"].replace(".", "_")
+
+    collection = chroma_client.get_or_create_collection(
+        name=f"paper_chunks_{paper_id}"
     )
 
     collection.add(
@@ -258,7 +280,7 @@ def retrieve_chunks(
             "error": "Vector store is not available.",
         }
 
-    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    # embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
     question_embedding = embedding_model.encode(
         [question]
@@ -318,7 +340,6 @@ def summarize(state: AgentState) -> AgentState:
 
     # Use the beginning of the paper because it contains
     # the abstract and introduction.
-    total_length = len(paper_text)
 
     total_length = len(paper_text)
 
@@ -350,29 +371,43 @@ Do not invent results, limitations, or claims.
 
 Create a concise but informative briefing with exactly these sections:
 
-1. Title
-2. Authors
-3. arXiv ID
-4. Date
-5. Link
-6. Plain-English Summary
-7. Problem
-8. Approach
-9. Key Results
-10. Limitations
-11. Follow-up Questions
+1. Title :
+2. Authors :
+3. arXiv ID :
+4. Date :
+5. Link :
+6. Plain-English Summary :
+7. Problem :
+8. Approach :
+9. Key Results :
+10. Limitations :
+11. Follow-up Questions :
 
-For Limitations:
-- Report limitations of the proposed method (AR-RAG), not limitations of previous/existing methods.
-- Only include limitations explicitly stated by the authors.
-- You may use the Conclusion or other sections if the authors explicitly discuss limitations there.
-- Do not treat problems with prior methods as limitations of AR-RAG.
-- If the paper does not explicitly state limitations of AR-RAG, write:
+For sections 6-9:
+Summarize only information supported by the provided paper content.
+Do not invent or infer unsupported claims.
+
+For section 10 (Limitations):
+Identify limitations that are explicitly stated or clearly discussed in
+the paper, including limitations mentioned in the discussion, conclusion,
+or future-work sections.
+
+Do not invent limitations.
+If the paper does not provide enough evidence to identify a limitation,
+write:
 "Not clearly stated in the provided paper content."
 
-For sections 6-11, use information from the paper content.
-If a requested detail cannot be determined from the provided paper content,
-write:
+For section 11 (Follow-up Questions):
+Generate 2-3 useful research questions based ONLY on limitations,
+open problems, unanswered questions, or future-work directions that
+are supported by the paper.
+
+The questions should be specific to this paper.
+Do not introduce unrelated topics or assumptions.
+Do not answer the questions.
+
+If the paper does not provide enough information to create meaningful
+paper-specific follow-up questions, write:
 "Not clearly stated in the provided paper content."
 
 Paper metadata:
@@ -433,14 +468,6 @@ def qa(state: AgentState) -> AgentState:
             "retrieved_chunks": [],
             "error": "",
         }
-    print("\n===== RETRIEVED CONTEXT =====")
-
-    for i, chunk in enumerate(retrieved_chunks, 1):
-        print(f"\n--- Chunk {i} ---")
-        print(chunk[:1000])
-
-    print("\n=============================\n")
-
     
     context = "\n\n---\n\n".join(retrieved_chunks)
 
@@ -504,19 +531,6 @@ def route_after_chunking(state: AgentState) -> str:
 
     return "summarize"
 
-def route_after_summary(state: AgentState) -> str:
-    """Route to QA only if summarization succeeded."""
-
-    if state.get("error"):
-        return "end"
-
-    return "qa"
-
-def route_after_qa(state: AgentState) -> str:
-    """End the current graph run after answering a question."""
-
-    return "end"
-
 # Build the state graph
 builder = StateGraph(AgentState)
 
@@ -532,7 +546,6 @@ builder.add_node("qa", qa)
 builder.add_edge(START, "understand_query")
 builder.add_edge("understand_query", "retrieve_arxiv")
 builder.add_edge("retrieve_arxiv", "select_paper")
-# builder.add_edge("select_paper", "fetch_parse")
 builder.add_conditional_edges(
     "select_paper",
     route_after_selection,
@@ -542,7 +555,6 @@ builder.add_conditional_edges(
     },
 )
 
-# builder.add_edge("fetch_parse", "chunk_embed")
 builder.add_conditional_edges(
     "fetch_parse",
     route_after_fetch,
@@ -551,7 +563,7 @@ builder.add_conditional_edges(
         "end": END,
     },
 )
-# builder.add_edge("chunk_embed", "summarize")
+
 builder.add_conditional_edges(
     "chunk_embed",
     route_after_chunking,
@@ -560,15 +572,6 @@ builder.add_conditional_edges(
         "end": END,
     },
 )
-# builder.add_edge("summarize", "qa")
-# builder.add_conditional_edges(
-#     "summarize",
-#     route_after_summary,
-#     {
-#         "qa": "qa",
-#         "end": END,
-#     },
-# )
 
 builder.add_edge("summarize", END)
 builder.add_edge("qa", END)

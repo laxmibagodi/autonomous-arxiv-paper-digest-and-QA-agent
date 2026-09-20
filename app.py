@@ -93,15 +93,21 @@ if result:
                             "question": question.strip(),
                         }
                     )
-
+        
                 if qa_result.get("error"):
-                    st.error(qa_result["error"])
+                    st.session_state["qa_error"] = qa_result["error"]
+                    st.session_state["qa_answer"] = ""
                 else:
-                    st.markdown("### Answer")
-
-                    st.write(
-                        qa_result.get(
-                            "answer",
-                            "No answer generated."
-                        )
+                    st.session_state["qa_answer"] = qa_result.get(
+                        "answer",
+                        "No answer generated."
                     )
+                    st.session_state["qa_error"] = ""
+
+        # Display the stored QA result after every Streamlit rerun
+        if st.session_state.get("qa_error"):
+            st.error(st.session_state["qa_error"])
+        
+        if st.session_state.get("qa_answer"):
+            st.markdown("### Answer")
+            st.write(st.session_state["qa_answer"])

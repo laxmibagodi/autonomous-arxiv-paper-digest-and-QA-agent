@@ -1,244 +1,784 @@
-<div align="center">
-
+::: {align="center"}
 # 📄 Autonomous arXiv Paper Digest & QA Agent
 
 ### 🤖 Agentic AI · RAG · LangGraph · arXiv · Grounded QA
 
+```{=html}
 <p>
-  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/LangGraph-Agentic%20Workflow-1C3C3C?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Gemini-LLM-4285F4?style=for-the-badge&logo=google&logoColor=white">
-  <img src="https://img.shields.io/badge/ChromaDB-Vector%20Store-FF6F61?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white">
+```
+`<img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white">`{=html}
+`<img src="https://img.shields.io/badge/LangGraph-Agentic%20Workflow-1C3C3C?style=for-the-badge">`{=html}
+`<img src="https://img.shields.io/badge/Gemini-LLM-4285F4?style=for-the-badge&logo=google&logoColor=white">`{=html}
+`<img src="https://img.shields.io/badge/ChromaDB-Vector%20Store-FF6F61?style=for-the-badge">`{=html}
+`<img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white">`{=html}
+```{=html}
 </p>
+```
+`<br>`{=html}
 
-<p>
-  <img src="https://img.shields.io/badge/arXiv-Paper%20Retrieval-B31B1B?style=flat-square">
-  <img src="https://img.shields.io/badge/RAG-Grounded%20QA-6A1B9A?style=flat-square">
-  <img src="https://img.shields.io/badge/PyMuPDF-PDF%20Parsing-00897B?style=flat-square">
-  <img src="https://img.shields.io/badge/Pytest-Testing-0A9EDC?style=flat-square">
-</p>
+### **Retrieve → Parse → Embed → Brief → Ask**
 
-**Retrieve → Parse → Embed → Brief → Ask**
+*A stateful agentic AI system for autonomous research-paper analysis and
+grounded question answering.*
+:::
 
-*A stateful agentic AI system for autonomous research-paper analysis and grounded question answering.*
+------------------------------------------------------------------------
 
-</div>
+::: {align="center"}
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 🔎 Retrieve
 
----
+Research topic, arXiv ID, or URL
+
+```{=html}
+</td>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 🧠 Understand
+
+Parse, chunk, embed and index
+
+```{=html}
+</td>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 💬 Answer
+
+Brief the paper and answer questions
+
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+:::
 
 ## 🌟 Overview
 
-**Autonomous arXiv Paper Digest & QA Agent** is an agentic AI application that retrieves research papers from **arXiv**, processes their PDF content, generates an **executive briefing**, and answers questions using the selected paper as the knowledge source.
+**Autonomous arXiv Paper Digest & QA Agent** retrieves research papers
+from **arXiv**, processes their PDF content, generates an **executive
+briefing**, and answers questions using the selected paper as the
+knowledge source.
 
-The system combines:
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+Layer
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Technology
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Purpose
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🤖 Agent Orchestration
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}LangGraph`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stateful nodes, edges and conditional routing
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧠 Generative AI
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}Google Gemini`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Executive briefing and grounded QA
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🔎 Retrieval
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}Official arXiv API`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Paper discovery and metadata
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📄 PDF Processing
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}PyMuPDF`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Text extraction
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧬 Embeddings
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}Sentence Transformers`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Semantic representation
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🗄️ Vector Store
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}ChromaDB`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Semantic retrieval
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🖥️ Interface
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+`<b>`{=html}Streamlit`</b>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Interactive application
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 🎯 Problem Statement
 
-- 🧠 **LangGraph** for stateful agent orchestration
-- 🔎 **arXiv API** for paper retrieval
-- 📄 **PyMuPDF** for PDF extraction
-- 🧬 **Sentence Transformers** for embeddings
-- 🗄️ **ChromaDB** for vector storage
-- 🤖 **Google Gemini** for summarization and QA
-- 🖥️ **Streamlit** for the application interface
+Research papers contain large amounts of technical information that can
+be difficult to process quickly.
 
-### Input
+The system autonomously: - 🧠 Understands user input - 🔎 Retrieves
+relevant papers from arXiv - 🎯 Selects an appropriate paper - 📥
+Downloads and parses the PDF - ✂️ Splits the paper into chunks - 🧬
+Generates embeddings - 📝 Creates an executive briefing - 💬 Answers
+questions using paper content - 🛡️ Handles failures through conditional
+routing
 
-The user can provide:
+------------------------------------------------------------------------
 
-```text
-🔎 Research topic
-🆔 arXiv paper ID
-🔗 arXiv paper URL
-Output
+## 🏗️ System Architecture
 
-The agent produces:
-
-📝 Executive Briefing
-        +
-💬 Grounded Paper QA
-🎯 Problem Statement
-
-Research papers contain large amounts of technical information that can be difficult to process quickly.
-
-This project builds an autonomous workflow that can:
-
-#	Capability
-01	🧠 Understand the user's input
-02	🔎 Retrieve relevant papers from arXiv
-03	🎯 Select an appropriate paper
-04	📥 Download and parse the PDF
-05	✂️ Split the paper into meaningful chunks
-06	🧬 Generate embeddings and store them
-07	📝 Generate an executive briefing
-08	💬 Answer questions using paper content
-09	🛡️ Handle failures through conditional routing
-🏗️ System Architecture
-                         👤 USER INPUT
-                              │
-                              ▼
-                  ┌─────────────────────────┐
-                  │    🧠 Understand Query  │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │     🔎 arXiv Search     │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │      🎯 Select Paper    │
-                  └────────────┬────────────┘
-                               │
-                         Conditional
-                           Routing
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │     📥 Fetch + Parse    │
-                  │          PDF            │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │      ✂️ Chunk + Embed   │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │     🗄️ ChromaDB Store  │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │    📝 Executive Brief   │
-                  └─────────────────────────┘
-
-                               │
-                               ▼
-                        💬 USER QUESTION
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │    🔍 Retrieve Chunks   │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                  ┌─────────────────────────┐
-                  │    🤖 Gemini Grounded   │
-                  │           QA            │
-                  └────────────┬────────────┘
-                               │
-                               ▼
-                          ✅ ANSWER
-🧩 Agent Workflow
-
-The main processing workflow is implemented as an explicit LangGraph state graph.
-
-START
-  │
-  ▼
-Understand Query
-  │
-  ▼
-Retrieve arXiv Papers
-  │
-  ▼
-Select Paper
-  │
-  ├──────────── error ────────────► END
-  │
-  ▼
-Fetch + Parse PDF
-  │
-  ├──────────── error ────────────► END
-  │
-  ▼
-Chunk + Embed
-  │
-  ├──────────── error ────────────► END
-  │
-  ▼
-Generate Executive Briefing
-  │
-  ▼
-END
-💬 QA Loop
-User Question
+``` text
+👤 USER INPUT
       │
       ▼
-Semantic Retrieval
+🧠 Understand Query
       │
       ▼
-Relevant Paper Chunks
+🔎 arXiv Search
       │
       ▼
-Grounded Gemini Prompt
+🎯 Select Paper
+      │
+      ├──────── error ────────► END
       │
       ▼
-Paper-Based Answer
-🔄 Retrieval-Augmented Generation
-
-The RAG pipeline follows:
-
-📄 Paper PDF
-     │
-     ▼
-📑 PyMuPDF
-     │
-     ▼
-📃 Extracted Text
-     │
-     ▼
-✂️ Text Chunking
-     │
-     ▼
-🧬 Sentence Transformer
-     │
-     ▼
+📥 Fetch + Parse PDF
+      │
+      ├──────── error ────────► END
+      │
+      ▼
+✂️ Chunk + Embed
+      │
+      ▼
 🗄️ ChromaDB
-     │
-     ▼
+      │
+      ▼
+📝 Executive Brief
+      │
+      ▼
+💬 User Question
+      │
+      ▼
+🔍 Retrieve Relevant Chunks
+      │
+      ▼
+🤖 Gemini Grounded QA
+      │
+      ▼
+✅ Paper-Based Answer
+```
+
+## 🤖 Agentic AI + GenAI + RAG
+
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 🤖 Agentic AI
+
+`<b>`{=html}LangGraph`</b>`{=html}
+
+Stateful nodes, shared state, edges and conditional routing.
+
+```{=html}
+</td>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 🧠 GenAI
+
+`<b>`{=html}Google Gemini`</b>`{=html}
+
+Generates the executive briefing and paper-grounded answers.
+
+```{=html}
+</td>
+```
+```{=html}
+<td align="center" width="33%">
+```
+### 🔎 RAG
+
+`<b>`{=html}ChromaDB`</b>`{=html}
+
+Retrieves relevant paper chunks before QA generation.
+
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 🔄 Retrieval-Augmented Generation
+
+``` text
+📄 PDF
+ ↓
+📑 PyMuPDF
+ ↓
+📃 Extracted Text
+ ↓
+✂️ Chunking
+ ↓
+🧬 Sentence Transformer
+ ↓
+🗄️ ChromaDB
+ ↓
 🔍 Semantic Retrieval
-     │
-     ▼
+ ↓
 📚 Relevant Chunks
-     │
-     ▼
+ ↓
 🤖 Gemini
-     │
-     ▼
+ ↓
 💬 Grounded Answer
+```
 
-The QA system is explicitly instructed to use the retrieved paper content rather than relying on unsupported outside information.
+> 🛡️ **Grounding rule:** When the requested information cannot be found
+> in the paper, the system responds: **"The information is not available
+> in the paper."**
 
-If the requested information cannot be found, the agent responds:
+------------------------------------------------------------------------
 
-The information is not available in the paper.
+## 🖥️ Application Demo
 
-📝 Executive Briefing
+```{=html}
+<p align="center">
+```
+`<em>`{=html}Interactive Streamlit interface for paper analysis,
+executive briefing and grounded QA.`</em>`{=html}
+```{=html}
+</p>
+```
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td width="50%" valign="top">
+```
+### 📄 Paper Analysis
+
+```{=html}
+<p align="center">
+```
+`<img src="docs/screenshots/01-paper-analysis.png" width="100%">`{=html}
+```{=html}
+</p>
+```
+```{=html}
+</td>
+```
+```{=html}
+<td width="50%" valign="top">
+```
+### 📝 Executive Briefing
+
+```{=html}
+<p align="center">
+```
+`<img src="docs/screenshots/02-executive-briefing.png" width="100%">`{=html}
+```{=html}
+</p>
+```
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td width="50%" valign="top">
+```
+### 💬 Grounded QA
+
+```{=html}
+<p align="center">
+```
+`<img src="docs/screenshots/03-grounded-qa.png" width="100%">`{=html}
+```{=html}
+</p>
+```
+```{=html}
+</td>
+```
+```{=html}
+<td width="50%" valign="top">
+```
+### 🛡️ Grounding / Fallback
+
+```{=html}
+<p align="center">
+```
+`<img src="docs/screenshots/04-grounded-fallback.png" width="100%">`{=html}
+```{=html}
+</p>
+```
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+
+------------------------------------------------------------------------
+
+## 📝 Executive Briefing
 
 For each successfully processed paper, the agent generates:
 
-Section	Information
-01	📌 Title
-02	👥 Authors
-03	🆔 arXiv ID
-04	📅 Date
-05	🔗 Link
-06	💡 Plain-English Summary
-07	🎯 Problem
-08	⚙️ Approach
-09	📊 Key Results
-10	⚠️ Limitations
-11	❓ Follow-up Questions
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+\#
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Section
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+01
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+📌 Title
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+02
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+👥 Authors
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+03
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🆔 arXiv ID
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+04
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+📅 Date
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+05
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🔗 Link
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+06
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+💡 Plain-English Summary
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+07
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🎯 Problem
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+08
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+⚙️ Approach
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+09
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+📊 Key Results
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+10
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+⚠️ Limitations
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+11
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+❓ Follow-up Questions
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 🧠 Shared Agent State
 
-The briefing is generated from the selected paper's content and metadata.
-
-🧠 Shared Agent State
-
-The workflow uses a shared state object that is passed between LangGraph nodes.
-
+``` text
 user_input
 input_type
 query
@@ -254,256 +794,1154 @@ question
 answer
 conversation_history
 error
+```
 
-This allows each node to consume information produced by previous stages while maintaining a stateful workflow.
+Each node consumes information produced by previous stages while
+maintaining a stateful workflow.
 
-🧩 Node Responsibilities
-Node	Responsibility
-🧠 understand_query	Determines whether input is a topic, paper ID, or arXiv URL
-🔎 retrieve_arxiv	Retrieves candidate papers using the official arXiv API
-🎯 select_paper	Selects the most relevant candidate using deterministic lexical scoring
-📥 fetch_parse	Downloads and extracts text from the selected PDF
-✂️ chunk_embed	Splits text, generates embeddings, and stores them in ChromaDB
-📝 summarize	Generates the executive briefing
-🔍 retrieve_chunks	Retrieves semantically relevant chunks for a question
-💬 qa	Generates a grounded answer using retrieved paper content
-🛡️ Error-Aware Routing
+## 🧩 Node Responsibilities
 
-The agent does not blindly continue when a previous stage fails.
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+Node
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Responsibility
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}understand_query`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Determines whether input is a topic, paper ID, or arXiv URL
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}retrieve_arxiv`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Retrieves candidate papers using the official arXiv API
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}select_paper`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Selects the most relevant candidate using deterministic lexical scoring
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}fetch_parse`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Downloads and extracts text from the selected PDF
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}chunk_embed`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Splits text, generates embeddings, and stores them in ChromaDB
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}summarize`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Generates the executive briefing
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}retrieve_chunks`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Retrieves semantically relevant chunks for a question
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+`<code>`{=html}qa`</code>`{=html}
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Generates a grounded answer using retrieved paper content
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 🛡️ Error-Aware Routing
 
-Situation	Handling
-🔎 No arXiv results	Stops with a clear no-results message
-🌐 arXiv retrieval failure	Returns the retrieval error
-📄 Paper not selected	Stops before PDF processing
-📥 PDF download failure	Stops the workflow
-📑 PDF parsing failure	Stops the workflow
-📃 Insufficient extracted text	Rejects unusable PDF content
-✂️ Chunking failure	Stops before summarization
-💬 QA information unavailable	Returns a grounded fallback response
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+Situation
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Handling
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🔎 No arXiv results
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stops with a clear no-results message
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🌐 arXiv retrieval failure
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Returns the retrieval error
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📄 Paper not selected
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stops before PDF processing
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📥 PDF download failure
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stops the workflow
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📑 PDF parsing failure
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stops the workflow
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📃 Insufficient extracted text
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Rejects unusable PDF content
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+✂️ Chunking failure
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Stops before summarization
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+💬 QA information unavailable
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Returns a grounded fallback response
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 🛠️ Technology Stack
 
-Example:
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+Layer
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Technology
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🐍 Language
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Python
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🤖 Agent Framework
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+LangGraph
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧠 LLM
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Google Gemini
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🔎 Paper Retrieval
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Official arXiv API
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📄 PDF Processing
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+PyMuPDF
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+✂️ Text Splitting
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+LangChain Text Splitters
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧬 Embeddings
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Sentence Transformers
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🗄️ Vector Database
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+ChromaDB
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🖥️ Interface
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Streamlit
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧪 Testing
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Pytest
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🔧 Development
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+VS Code
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🌱 Version Control
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+Git + GitHub
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
+## 📁 Project Structure
 
-No papers were found on arXiv for the given query.
-
-For unsupported QA questions:
-
-The information is not available in the paper.
-🛠️ Technology Stack
-Layer	Technology
-🐍 Language	Python
-🤖 Agent Framework	LangGraph
-🧠 LLM	Google Gemini
-🔎 Paper Retrieval	Official arXiv API
-📄 PDF Processing	PyMuPDF
-✂️ Text Splitting	LangChain Text Splitters
-🧬 Embeddings	Sentence Transformers
-🗄️ Vector Database	ChromaDB
-🖥️ Interface	Streamlit
-🧪 Testing	Pytest
-🔧 Development	VS Code
-🌱 Version Control	Git + GitHub
-📁 Project Structure
+``` text
 autonomous-arxiv-paper-digest/
-│
 ├── 📂 src/
 │   ├── __init__.py
 │   ├── state.py
 │   └── graph.py
-│
 ├── 📂 tests/
 │   └── test_graph.py
-│
 ├── 📂 data/
-│
+├── 📂 docs/
+│   └── screenshots/
+│       ├── 01-paper-analysis.png
+│       ├── 02-executive-briefing.png
+│       ├── 03-grounded-qa.png
+│       └── 04-grounded-fallback.png
 ├── main.py
 ├── app.py
 ├── requirements.txt
 ├── .gitignore
 ├── .env.example
 └── README.md
-🚀 Installation & Setup
-1️⃣ Clone the Repository
+```
+
+## 🚀 Installation & Setup
+
+### 1️⃣ Clone
+
+``` bash
 git clone <YOUR-GITHUB-REPOSITORY-URL>
 cd autonomous-arxiv-paper-digest
-2️⃣ Create a Virtual Environment
+```
+
+### 2️⃣ Virtual Environment
+
+``` powershell
 python -m venv .venv
-Windows PowerShell
 .venv\Scripts\Activate.ps1
-Windows CMD
-.venv\Scripts\activate
-3️⃣ Install Dependencies
+```
+
+### 3️⃣ Dependencies
+
+``` bash
 pip install -r requirements.txt
-🔐 Environment Configuration
+```
 
-Create a .env file in the project root:
+### 🔐 Environment
 
+Create `.env`:
+
+``` env
 GOOGLE_API_KEY=your_google_api_key
+```
 
-The .env file is excluded from Git through .gitignore.
+The `.env` file is excluded from Git through `.gitignore`.
 
-A template is provided:
+## 🖥️ Running the Application
 
-.env.example
-🖥️ Running the Application
-Streamlit Interface
-
-Start the application:
-
+``` bash
 streamlit run app.py
+```
 
-The interface allows users to:
+If the Streamlit local watcher produces the previously encountered
+`torchvision` watcher error:
 
-🔎 Enter a research topic, arXiv ID, or arXiv URL.
-⚙️ Analyze the paper.
-📝 View the executive briefing.
-💬 Ask questions about the paper.
-✅ Receive grounded answers.
-Optional Streamlit Watcher Workaround
-
-If Streamlit's local file watcher produces a torchvision-related watcher error, run:
-
+``` bash
 streamlit run app.py --server.fileWatcherType none
+```
 
-This only disables the file watcher and does not change the agent workflow.
+CLI mode:
 
-💻 CLI Mode
-
-The backend can also be run directly:
-
+``` bash
 python main.py
+```
 
-The CLI supports:
+## 🧪 Testing
 
-Research topic
-arXiv paper ID
-arXiv paper URL
-
-After processing the paper, an interactive QA loop is available.
-
-Type:
-
-exit
-
-to quit.
-
-🧪 Example Inputs
-🔹 arXiv Paper ID
-1706.03762
-🔹 arXiv URL
-https://arxiv.org/abs/1706.03762
-🔹 Research Topic
-retrieval augmented generation
-🧪 Testing
-
-Automated tests are included using pytest.
-
-Run:
-
+``` bash
 python -m pytest
-Test Coverage
-✅ Topic input detection
-✅ arXiv ID detection
-✅ arXiv URL detection
-✅ Paper selection
-✅ Paper ranking
-✅ Existing error preservation
-✅ Conditional routing
-✅ Missing paper handling
-✅ Missing paper text handling
-💡 Key Design Decisions
-1. 🧠 LangGraph for Explicit State Management
+```
 
-LangGraph makes the workflow visible through:
+Current tests cover:
 
-Nodes
-Edges
-Conditional routing
-Shared state
+-   ✅ Topic input detection
+-   ✅ arXiv ID detection
+-   ✅ arXiv URL detection
+-   ✅ Paper selection and ranking
+-   ✅ Existing error preservation
+-   ✅ Conditional routing
+-   ✅ Missing paper handling
+-   ✅ Missing paper text handling
 
-This makes the agent easier to reason about and debug.
+## 💡 Key Design Decisions
 
-2. 🎯 Deterministic Paper Selection
+```{=html}
+<details>
+```
+```{=html}
+<summary>
+```
+`<strong>`{=html}1. 🧠 LangGraph for Explicit State
+Management`</strong>`{=html}
+```{=html}
+</summary>
+```
+`<br>`{=html} Nodes, edges, conditional routing and shared state make
+the workflow visible, stateful and easier to debug.
+```{=html}
+</details>
+```
+```{=html}
+<details>
+```
+```{=html}
+<summary>
+```
+`<strong>`{=html}2. 🎯 Deterministic Paper Selection`</strong>`{=html}
+```{=html}
+</summary>
+```
+`<br>`{=html} Candidate papers are ranked using deterministic lexical
+matching rather than arbitrary LLM selection, making selection
+reproducible.
+```{=html}
+</details>
+```
+```{=html}
+<details>
+```
+```{=html}
+<summary>
+```
+`<strong>`{=html}3. 🗄️ Paper-Specific Vector
+Collections`</strong>`{=html}
+```{=html}
+</summary>
+```
+`<br>`{=html} Each processed arXiv paper receives its own ChromaDB
+collection so chunks from different papers are not mixed during
+retrieval.
+```{=html}
+</details>
+```
+```{=html}
+<details>
+```
+```{=html}
+<summary>
+```
+`<strong>`{=html}4. 🛡️ Grounded QA`</strong>`{=html}
+```{=html}
+</summary>
+```
+`<br>`{=html} The QA prompt restricts the model to retrieved paper
+content. If the information is unavailable, a fixed fallback response is
+returned rather than an invented answer.
+```{=html}
+</details>
+```
+```{=html}
+<details>
+```
+```{=html}
+<summary>
+```
+`<strong>`{=html}5. 🔀 Conditional Failure Routing`</strong>`{=html}
+```{=html}
+</summary>
+```
+`<br>`{=html} Each major processing stage can stop the workflow when an
+error occurs, preventing downstream nodes from operating on incomplete
+state.
+```{=html}
+</details>
+```
+## ⚠️ Limitations
 
-Candidate papers are ranked using deterministic lexical matching rather than arbitrary LLM selection.
+-   Processes one selected paper at a time.
+-   arXiv retrieval depends on API availability.
+-   PDF extraction quality depends on the source PDF structure.
+-   The current vector store exists within the running application
+    process.
+-   No model fine-tuning is performed.
+-   No authentication is implemented.
+-   No persistent multi-user storage is implemented.
+-   Complex PDF layouts, scanned documents, tables, and mathematical
+    formatting may not always extract perfectly.
 
-This makes paper selection reproducible.
+## 🔮 Future Improvements
 
-3. 🗄️ Paper-Specific Vector Collections
+-   🔎 Improved query understanding and paper ranking
+-   📚 Multi-paper comparison
+-   🗄️ Persistent vector storage
+-   🔗 Citation-aware answers
+-   📊 Better table and mathematical-content extraction
+-   🧠 Longer conversation memory
+-   🤖 More advanced agent planning and tool selection
+-   📏 Retrieval and answer-quality evaluation datasets
+-   ☁️ Hosted deployment
 
-Each processed arXiv paper receives its own ChromaDB collection.
+## 📊 Project Status
 
-This prevents chunks from different papers from being mixed during retrieval.
+```{=html}
+<table>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<th>
+```
+Component
+```{=html}
+</th>
+```
+```{=html}
+<th>
+```
+Status
+```{=html}
+</th>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧠 Query Understanding
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🔎 arXiv Retrieval
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🎯 Paper Selection
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📥 PDF Download
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📑 PDF Text Extraction
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+✂️ Text Chunking
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧬 Embeddings
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🗄️ ChromaDB Storage
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+📝 Executive Briefing
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+💬 Grounded QA
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🛡️ Error Routing
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🧪 Automated Tests
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+<tr>
+```
+```{=html}
+<td>
+```
+🖥️ Streamlit Interface
+```{=html}
+</td>
+```
+```{=html}
+<td>
+```
+🟢 Complete
+```{=html}
+</td>
+```
+```{=html}
+</tr>
+```
+```{=html}
+</table>
+```
 
-4. 🛡️ Grounded QA
+------------------------------------------------------------------------
 
-The QA prompt explicitly restricts the model to retrieved paper content.
+::: {align="center"}
+### 🚀 Technical Assessment Implementation Complete
 
-When information is unavailable, the system uses a fixed fallback response rather than inventing an answer.
+**Retrieve · Understand · Ground · Answer**
 
-5. 🔀 Conditional Failure Routing
+`<br>`{=html}
 
-Each major processing stage can stop the workflow when an error occurs.
-
-This prevents downstream nodes from operating on incomplete state.
-
-⚠️ Limitations
-Processes one selected paper at a time.
-arXiv retrieval depends on API availability.
-PDF extraction quality depends on the source PDF structure.
-The current vector store exists within the running application process.
-No model fine-tuning is performed.
-No authentication is implemented.
-No persistent multi-user storage is implemented.
-Complex PDF layouts, scanned documents, tables, and mathematical formatting may not always extract perfectly.
-🔮 Future Improvements
-
-Potential extensions include:
-
-🔎 Improved query understanding and paper ranking
-📚 Multi-paper comparison
-🗄️ Persistent vector storage
-🔗 Citation-aware answers
-📊 Better table and mathematical-content extraction
-🧠 Longer conversation memory
-🤖 More advanced agent planning and tool selection
-📏 Retrieval and answer-quality evaluation datasets
-☁️ Hosted deployment
-✅ Project Status
-Component	Status
-🧠 Query Understanding	🟢 Complete
-🔎 arXiv Retrieval	🟢 Complete
-🎯 Paper Selection	🟢 Complete
-📥 PDF Download	🟢 Complete
-📑 PDF Text Extraction	🟢 Complete
-✂️ Text Chunking	🟢 Complete
-🧬 Embeddings	🟢 Complete
-🗄️ ChromaDB Storage	🟢 Complete
-📝 Executive Briefing	🟢 Complete
-💬 Grounded QA	🟢 Complete
-🛡️ Error Routing	🟢 Complete
-🧪 Automated Tests	🟢 Complete
-🖥️ Streamlit Interface	🟢 Complete
-📖 Documentation	🟢 Complete
-🚀 Project Highlights
-<div align="center">
-🤖 Agentic Workflow	🔎 Grounded Retrieval	🛡️ Failure Handling
-Stateful LangGraph	RAG + ChromaDB	Conditional Routing
-📄 Paper Understanding	💬 Interactive QA	🖥️ Application Layer
-Executive Briefing	Paper-Grounded Answers	Streamlit
-</div>
-📌 Project Status
-
-Technical assessment implementation complete.
-
-The system currently supports the complete workflow from:
-
-User Input → Paper Retrieval → PDF Processing → Vector Retrieval → Executive Briefing → Grounded QA
-
-<div align="center">
-📄 Autonomous arXiv Paper Digest & QA Agent
-
-Retrieve · Understand · Ground · Answer
-
-Built with 🐍 Python · 🤖 LangGraph · 🧠 Gemini · 🔎 arXiv · 🗄️ ChromaDB · 🖥️ Streamlit
-
-</div>
+🐍 **Python** · 🤖 **LangGraph** · 🧠 **Gemini** · 🔎 **arXiv** · 🗄️
+**ChromaDB** · 🖥️ **Streamlit**
+:::

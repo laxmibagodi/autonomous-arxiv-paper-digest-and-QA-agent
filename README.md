@@ -174,9 +174,7 @@ The following CLI recording demonstrates the complete workflow:
 <strong>paper input → paper processing → executive briefing → grounded QA → grounded fallback</strong>.
 </p>
 
-<p align="center">
-  <img src="docs/demo/cli-demo.gif" width="850">
-</p>
+https://github.com/user-attachments/assets/e08cf81f-d99b-4630-a05f-944ba56f1029
 
 <p align="center">
   <em>CLI demonstration of paper analysis and grounded question answering</em>
@@ -199,7 +197,9 @@ arxiv-agent/
 │
 ├── docs/
 │   └── demo/
-│       └── cli-demo.gif
+│       └── cli-demo-small.mp4
+    └── screenshots/
+        └── project_structure.png
 │
 ├── main.py
 ├── README.md
@@ -209,7 +209,7 @@ arxiv-agent/
 </pre>
 
 <p align="center">
-  <em>Actual project structure of the CLI-based agent</em>
+  <em>Project Structure</em>
 </p>
 
 <hr>

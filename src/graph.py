@@ -372,16 +372,41 @@ Do not invent results, limitations, or claims.
 Create a concise but informative briefing with exactly these sections:
 
 1. Title :
+
 2. Authors :
+
 3. arXiv ID :
+
 4. Date :
+
 5. Link :
+
+-------------------------------------------------------------
+
 6. Plain-English Summary :
+
+-------------------------------------------------------------
+
 7. Problem :
+
+-------------------------------------------------------------
+
 8. Approach :
+
+-------------------------------------------------------------
+
 9. Key Results :
+
+-------------------------------------------------------------
+
 10. Limitations :
+
+-------------------------------------------------------------
+
 11. Follow-up Questions :
+
+-------------------------------------------------------------
+
 
 For sections 6-9:
 Summarize only information supported by the provided paper content.

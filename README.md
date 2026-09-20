@@ -9,7 +9,6 @@
   <img src="https://img.shields.io/badge/LangGraph-Agentic%20Workflow-1C3C3C?style=for-the-badge">
   <img src="https://img.shields.io/badge/Gemini-LLM-4285F4?style=for-the-badge&logo=google&logoColor=white">
   <img src="https://img.shields.io/badge/ChromaDB-Vector%20Store-FF6F61?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white">
 </p>
 
 <p>
@@ -29,7 +28,6 @@
 
 ## 🌟 Overview
 
-<!-- **Autonomous arXiv Paper Digest & QA Agent** is an agentic AI application that retrieves research papers from **arXiv**, processes their PDF content, generates an **executive briefing**, and answers questions using the selected paper as the knowledge source. -->
 **Autonomous arXiv Paper Digest & QA Agent** is a stateful **agentic AI application**
 that automates the process of retrieving, processing, understanding, and querying
 research papers from **arXiv**.
@@ -119,7 +117,6 @@ generation (RAG)</strong> into one stateful workflow.
   <li>🧬 <strong>Sentence Transformers</strong> for embeddings</li>
   <li>🗄️ <strong>ChromaDB</strong> for vector storage</li>
   <li>🤖 <strong>Google Gemini</strong> for summarization and QA</li>
-  <li>🖥️ <strong>Streamlit</strong> for the application interface</li>
 </ul>
 
 <h3>Input</h3>
@@ -168,29 +165,27 @@ generation (RAG)</strong> into one stateful workflow.
 </td>
 </tr>
 </table>
+<hr>
 
-<h3 align="center">
-  <em>Application Output</em>
-</h3>
+<h2>🎬 Example Run</h2>
 
-<p align="center">
-  <img src="docs/screenshots/1. paper-analysis.png" width="700">
+<p>
+The following CLI recording demonstrates the complete workflow:
+<strong>paper input → paper processing → executive briefing → grounded QA → grounded fallback</strong>.
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/2. executive-briefing.png" width="700">
+  <img src="docs/demo/cli-demo.gif" width="850">
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/3. grounded-qa.png" width="700">
+  <em>CLI demonstration of paper analysis and grounded question answering</em>
 </p>
 
-<p align="center">
-  <img src="docs/screenshots/4. grounded-fallback.png" width="700">
-</p>
+<hr>
 </div>
 
-<h2>📁 Project Structure</h2>
+<<h2>📁 Project Structure</h2>
 
 <pre>
 arxiv-agent/
@@ -203,13 +198,9 @@ arxiv-agent/
 │   └── test_graph.py
 │
 ├── docs/
-│   └── screenshots/
-│       ├── 1. paper-analysis.png
-│       ├── 2. executive-briefing.png
-│       ├── 3. grounded-qa.png
-│       └── 4. grounded-fallback.png
+│   └── demo/
+│       └── cli-demo.gif
 │
-├── app.py
 ├── main.py
 ├── README.md
 ├── requirements.txt
@@ -218,8 +209,10 @@ arxiv-agent/
 </pre>
 
 <p align="center">
-  <em>Actual project structure in VS Code</em>
+  <em>Actual project structure of the CLI-based agent</em>
 </p>
+
+<hr>
 
 <p align="center">
   <img src="docs/screenshots/project_structure.png" width="700">
@@ -334,7 +327,7 @@ and RAG provides the grounding.
 <pre>
 ┌──────────────────────┐
 │      👤 USER         │
-│ Topic / ID / URL     │
+│   Topic / ID / URL   │
 └──────────┬───────────┘
            │
            ▼
@@ -353,40 +346,56 @@ and RAG provides the grounding.
 │ 🎯 Select Paper      │
 └──────────┬───────────┘
            │
+           ├──────── error ────────► END
+           │
            ▼
 ┌──────────────────────┐
 │ 📥 Fetch + Parse PDF │
 └──────────┬───────────┘
+           │
+           ├──────── error ────────► END
            │
            ▼
 ┌──────────────────────┐
 │ ✂️ Chunk + Embed     │
 └──────────┬───────────┘
            │
+           ├──────── error ────────► END
+           │
            ▼
 ┌──────────────────────┐
 │ 🗄️ ChromaDB          │
+│   Vector Store       │
 └──────────┬───────────┘
            │
-           ├──────────────────────┐
-           ▼                      ▼
-┌──────────────────────┐  ┌──────────────────────┐
-│ 📝 Executive Brief   │  │ 💬 User Question     │
-└──────────────────────┘  └──────────┬───────────┘
-                                     │
-                                     ▼
-                            ┌──────────────────────┐
-                            │ 🔍 Retrieve Chunks   │
-                            └──────────┬───────────┘
-                                       │
-                                       ▼
-                            ┌──────────────────────┐
-                            │ 🤖 Gemini Grounded   │
-                            │        QA            │
-                            └──────────┬───────────┘
-                                       │
-                                       ▼
-                                ✅ Answer
+           ▼
+┌──────────────────────┐
+│ 📝 Executive Brief   │
+└──────────┬───────────┘
+           │
+           ▼
+        END
+           │
+           │ Processed state
+           ▼
+┌──────────────────────┐
+│ 💬 User Question     │
+│      QA Loop         │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ 🔍 Retrieve Chunks   │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ 🤖 Gemini Grounded   │
+│        QA            │
+└──────────┬───────────┘
+           │
+           ▼
+      ✅ Answer
 </pre>
 
 <hr>
@@ -432,8 +441,8 @@ END
 <h3>💬 QA Loop</h3>
 
 <p>
-The QA stage operates on the processed paper and uses semantic retrieval
-before generating the answer.
+The QA stage uses the processed paper state and performs semantic retrieval
+from the paper-specific vector store before generating the answer.
 </p>
 
 <pre>
@@ -870,7 +879,7 @@ The information is not available in the paper.
 
 <tr>
 <td>🖥️ Interface</td>
-<td>Streamlit</td>
+<td>CLI</td>
 </tr>
 
 <tr>
@@ -899,8 +908,8 @@ The information is not available in the paper.
 <h3>1️⃣ Clone the Repository</h3>
 
 <pre>
-git clone &lt;YOUR-GITHUB-REPOSITORY-URL&gt;
-cd autonomous-arxiv-paper-digest
+git clone &lt;https://github.com/laxmibagodi/autonomous-arxiv-paper-digest-and-QA-agent.git&gt;
+cd autonomous-arxiv-paper-digest-and-QA-agent
 </pre>
 
 <h3>2️⃣ Create a Virtual Environment</h3>
@@ -956,60 +965,32 @@ A template is provided:
 
 <h2>🖥️ Running the Application</h2>
 
-<h3>Streamlit Interface</h3>
+<h2>🖥️ Running the Application</h2>
 
-<p>Start the application:</p>
-
-<pre>
-streamlit run app.py
-</pre>
-
-<p>The interface allows users to:</p>
-
-<ul>
-<li>🔎 Enter a research topic, arXiv ID, or arXiv URL.</li>
-<li>⚙️ Analyze the paper.</li>
-<li>📝 View the executive briefing.</li>
-<li>💬 Ask questions about the paper.</li>
-<li>✅ Receive grounded answers.</li>
-</ul>
-
-<h3>Optional Streamlit Watcher Workaround</h3>
+<h3>CLI Mode</h3>
 
 <p>
-If Streamlit's local file watcher produces a
-<code>torchvision</code>-related watcher error, run:
+The agent is designed as a lightweight command-line application.
 </p>
-
-<pre>
-streamlit run app.py --server.fileWatcherType none
-</pre>
-
-<p>
-This only disables the file watcher and does not change the agent workflow.
-</p>
-
-<hr>
-
-<h2>💻 CLI Mode</h2>
-
-<p>The backend can also be run directly:</p>
 
 <pre>
 python main.py
 </pre>
 
-<p>The CLI supports:</p>
+<p>The CLI accepts:</p>
 
 <ul>
-<li>Research topic</li>
-<li>arXiv paper ID</li>
-<li>arXiv paper URL</li>
+<li>🔎 A natural-language research topic</li>
+<li>🆔 An arXiv paper ID</li>
+<li>🔗 An arXiv paper URL</li>
 </ul>
 
-<p>
-After processing the paper, an interactive QA loop is available.
-</p>
+<ul>
+<li>⚙️ after giving input, the system Analyzes the paper.</li>
+<li>📝 displays the executive briefing.</li>
+<li>💬 then, an interactive QA loop is available.</li>
+<li>we can ask questions about the paper and ✅ Receive grounded answers.</li>
+</ul>
 
 <p>Type:</p>
 
@@ -1257,11 +1238,6 @@ may not always extract perfectly.
 </tr>
 
 <tr>
-<td>🖥️ Streamlit Interface</td>
-<td>🟢 Complete</td>
-</tr>
-
-<tr>
 <td>📖 Documentation</td>
 <td>🟢 Complete</td>
 </tr>
@@ -1321,11 +1297,8 @@ may not always extract perfectly.
 </td>
 
 <td align="center">
-
-<h3>🖥️ Application Layer</h3>
-
-<p>Streamlit</p>
-
+<h3>💻 CLI Interaction</h3>
+<p>Lightweight Interface</p>
 </td>
 
 </tr>
@@ -1364,7 +1337,7 @@ User Input → Paper Retrieval → PDF Processing → Vector Retrieval
 
 <p>
 Built with 🐍 Python · 🤖 LangGraph · 🧠 Gemini · 🔎 arXiv ·
-🗄️ ChromaDB · 🖥️ Streamlit
+🗄️ ChromaDB 
 </p>
 
 </div>
